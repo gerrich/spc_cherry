@@ -1,0 +1,122 @@
+<html>
+  <head></head>
+  <style>
+    span.orange {
+      background-color: #FFA930;
+    }
+    span.white {
+      background-color: #FFFFFF;
+    }
+    .pu-menu {
+      background-color: #168DE2;
+      padding: 10px 10px 10px 10px;
+      white-space: nowrap;
+      text-align: left;
+    }
+    .pu-menu form {
+      margin: 0 0 0 0;
+      white-space: nowrap;
+      position: relative;
+    }
+    .pu-menu form span {
+      display: block;
+      cursor: text;
+      position: relative;
+      white-space: nowrap;
+      top: 0px;
+      padding: 5px 5px 5px 5px;
+    }
+    .pu-menu form span input {
+      font-family: 'Helvetica Neue Light', Arial, Tahoma, sans-serif;
+      font-size: 17px;
+      font-style: normal;
+      font-variant: normal;
+      font-weight: normal;
+      height: 21px;
+      width: 100%;
+      position: relative;
+      
+      border: none;
+      background-color: Transparent; 
+      background-repeat:no-repeat;
+      outline-style: none;
+      outline-width: 0px;
+    }
+    .spc_ans {
+      background-color: #c1c1c1;
+      padding: 15px;
+      font-family: 'Helvetica Neue Light', Arial, Tahoma, sans-serif;
+      font-size: 17px;
+      font-style: normal;
+      font-variant: normal;
+      font-weight: normal;
+      margin-bottom: 10px;
+    }
+    .spc_ans span.query {
+      color: #0000ff;
+    }
+    .spc_ans b {
+      font-weight: bold;
+      color: #ff0000;
+    }
+    #wnf-report {
+      background-color: #e0e0e0;
+    } 
+    .debug {
+      padding: 15px;
+      border: dashed 1px #999999;
+      margin-top: 20px; 
+    }
+  </style>
+  <script>
+    function toggle_by_id(id) {
+      var el = document.getElementById(id);
+      el.style.display = (el.style.display == 'none') ? 'block' : 'none';
+    }
+  </script>
+  <body>
+    <h1>Ask SPC</h1>
+    <div class="pu-menu"> 
+    <form method=GET action="/ask_spc">
+      <span class="white" style="position: relative; width: 380px;"><input type=text name=query value="{{ query|e}}" placeholder="Запрос" /></span>
+      <span class="white" style="position: absolute; left: 400px; width:380px;"><input type=text name=expected value="{{ expected |e }}" placeholder="Ожидание" /></span>
+      <span class="white" style="position: absolute; left: 800px; width:120px;"><input type=text name=host_port value="{{ host_port | e}}" placeholder="Сервер" /></span>
+      <span class="orange" style="position: absolute; left: 940px; width:60px;"><input type=submit value="Go"/></span>
+    </form>
+    </div>
+    <h3>TODO</h3>
+    <ul>
+      <li>move to scripts/spell_test </li>
+      <li>parse spc answer</li>
+      <li>parse spc protobuf</li>
+      <li>show spc hightlight</li>
+    </ul>
+    {% if spc_data %}
+    <div class="spc_ans">
+        query : <span class="query">{{ spc_data.hl_orig }}</span><br/>
+        {{ spc_data.verdict | e }} : <span class="query">{{ spc_data.hl }}</span><br/>
+        <!--
+        query: <span class="query">{{ spc_data.q | e }}</span><br/>
+        fixed: <span class="query">{{ spc_data.spcq | e }}</span><br/>
+        html: <span class="query">{{ spc_data.html }}</span><br/>
+        -->
+        <br/>
+        How fixed: {{ spc_data.FIX_TAGS | e }}<br/>
+        Iteration count: {{ spc_data.ITERATION_COUNT| e }}<br/>
+      
+        WNF tag: {{ spc_data.wnf_tag | e}}<br/>
+    </div>
+    <div class="spc_ans">     
+      <a href="" onclick='toggle_by_id("wnf-report"); return false;'>WNF_REPORT:</a><br/>
+      <pre id="wnf-report">{{ spc_data.wnf_report | e}}</pre>
+    </div>
+    {% endif %}
+    
+    {% if spc_ans != "" %}
+    <div class="debug">
+      <a href="" onclick='toggle_by_id("spc-ans"); return false;'>spc_ans</a><br/>
+      <pre id="spc-ans">{{ spc_ans | e }}</pre>
+    </div>
+    {% endif %}
+  </body>
+</html>

@@ -1,7 +1,8 @@
 # -*- coding: utf8 -*-
 
+PROJECT_HOME='/home/g.ivanov/coding/blamer'
 import sys
-sys.path.append('/home/ejudge/blamer')
+sys.path.append(PROJECT_HOME)
 import cherrypy
 import random
 import string
@@ -21,7 +22,7 @@ def decode_smart(data):
   return data, None
 
 def look_shingles(records):
-  base_path="/home/ejudge/blamer/shingles/000024.all.txt"
+  base_path=PROJECT_HOME + "/shingles/000024.all.txt"
   for record in records:
     #entries =  subprocess.Popen(['echo', '1', '2', '3'], stdout=subprocess.PIPE).communicate()[0]
     entries =  subprocess.Popen(['look',record['value'], base_path], stdout=subprocess.PIPE).communicate()[0]
@@ -34,8 +35,8 @@ def look_shingles(records):
 # Our CherryPy application
 class Root(object):
   def __init__(self):
-    self.env = Environment(loader=FileSystemLoader('/home/ejudge/blamer'))
-    self.runs_path = "/home/ejudge/ejudge-home/judges/000024/var/archive/runs/"
+    self.env = Environment(loader=FileSystemLoader(PROJECT_HOME))
+    self.runs_path = PROJECT_HOME + "/judges/000024/var/archive/runs/"
 
   @cherrypy.expose
   def index(self):
@@ -47,7 +48,7 @@ class Root(object):
 
   @cherrypy.expose
   def _list(self):
-    items = dircache.listdir('/home/ejudge/ejudge-home/judges/000024/var/archive/')
+    items = dircache.listdir(PROJECT_HOME + '/judges/000024/var/archive/')
     return "items " + str(items)
   
   @cherrypy.expose
